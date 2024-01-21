@@ -13,6 +13,7 @@ for item in "${SCRIPT_PATHS[@]}"; do
 done
 
 echo "Building Autograder..."
+rm autograder.zip
 zip -r autograder.zip ${DIRS_TO_COPY[@]} ${GRADLE_FILES[@]} $CONFIG_FILE
 zip -urj autograder.zip ${SCRIPT_PATHS[@]}
 echo "Build complete."
