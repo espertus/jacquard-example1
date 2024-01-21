@@ -21,6 +21,7 @@ CONFIG_TESTS_KEY = "tests"
 CONFIG_PACKAGES_KEY = "packages"
 
 # All directories are relative. On the server, they are relative to /autograder.
+AUTOGRADER_DIR = os.sep + "autograder" + os.sep
 SUBMISSION_SUBDIR = "submission" + os.sep
 GRADESCOPE_RESULTS_SUBDIR = "results" + os.sep
 GRADESCOPE_RESULTS_PATH = GRADESCOPE_RESULTS_SUBDIR + "results.json"
@@ -33,6 +34,12 @@ GRADLEW_UNIX_CMD = "./gradlew"
 FILES_TO_COPY = ["build.gradle", "gradle" + os.sep, "gradlew", "gradlew.bat",
                  "src" + os.sep, "lib" + os.sep, "config" + os.sep]
 
+# When the Maven repository is down, this appears in the error.
+MAVEN_ERROR = "Unable to load Maven meta-data"
+MAVEN_OUTAGE_MESSAGE = """
+Unfortunately, the autograder could not run because the Maven repository is down.
+This should resolve itself soon. You can view the status at: https://status.maven.org/
+If this interferes with your completing the assignment on time, post a private message on Piazza."""
 
 def is_windows():
     """Checks whether the underlying OS is Windows."""
@@ -109,7 +116,7 @@ def copy_req_files(config):
                 ensure_file_in_package(file_path, package)
             shutil.copy(file_path, dest_path)
         else:
-            raise Exception(f"File {file_path} not found.")
+            raise Exception(f"File {file} not found.")
 
 
 def repackage(config):
@@ -166,13 +173,18 @@ def output(s):
         print(s)
     else:
         print(s)
+        os.chdir(AUTOGRADER_DIR)
         with open(GRADESCOPE_RESULTS_PATH, "w") as text_file:
-            text_file.write(s)
+            nwritten = text_file.write(s)
+            print("# of characters written: " + str(nwritten))
 
 
 def output_error(e):
     """Output an error."""
-    data = {"score": 0, "output": str(e)}
+    s = str(e)
+    if MAVEN_ERROR in s:
+        s = MAVEN_OUTAGE_MESSAGE
+    data = {"score": 0, "output": s}
     output(json.dumps(data))
 
 
