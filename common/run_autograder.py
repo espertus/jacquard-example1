@@ -35,11 +35,14 @@ FILES_TO_COPY = ["build.gradle", "gradle" + os.sep, "gradlew", "gradlew.bat",
                  "src" + os.sep, "lib" + os.sep, "config" + os.sep]
 
 # When the Maven repository is down, this appears in the error.
-MAVEN_ERROR = "Unable to load Maven meta-data"
+MAVEN_ERROR1 = "Unable to load Maven meta-data"
+MAVEN_ERROR2 = "Gateway Time-out"
+MAVEN_ERROR3 = "Could not download"
 MAVEN_OUTAGE_MESSAGE = """
 Unfortunately, the autograder could not run because the Maven repository is down.
 This should resolve itself soon. You can view the status at: https://status.maven.org/
-If this interferes with your completing the assignment on time, post a private message on Piazza."""
+If this interferes with your completing the assignment on time, contact your instructor."""
+
 
 def is_windows():
     """Checks whether the underlying OS is Windows."""
@@ -160,7 +163,8 @@ def run():
     result = subprocess.run(
         [gradle_cmd, "clean", "run", "--quiet"],
         stdout=subprocess.PIPE,
-        stderr=subprocess.PIPE)
+        stderr=subprocess.PIPE
+    )
     if result.returncode != 0:
         raise Exception("Runtime error: " + result.stderr.decode("UTF-8"))
     os.chdir("..")
@@ -175,14 +179,13 @@ def output(s):
         print(s)
         os.chdir(AUTOGRADER_DIR)
         with open(GRADESCOPE_RESULTS_PATH, "w") as text_file:
-            nwritten = text_file.write(s)
-            print("# of characters written: " + str(nwritten))
+            text_file.write(s)
 
 
 def output_error(e):
     """Output an error."""
     s = str(e)
-    if MAVEN_ERROR in s:
+    if MAVEN_ERROR1 in s or MAVEN_ERROR2 in s or MAVEN_ERROR3 in s:
         s = MAVEN_OUTAGE_MESSAGE
     data = {"score": 0, "output": s}
     output(json.dumps(data))
