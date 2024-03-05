@@ -1,8 +1,7 @@
 # Jacquard Quiz 1 Example
 
 This is an example of a [Jacquard](https://github.com/espertus/jacquard)
-autograder for a quiz. See the [parent directory](../README.md) for a
-video overview and instructions.
+autograder for a quiz.
 
 ## Teacher Instructions
 
@@ -22,7 +21,7 @@ These directories and files have code specific to the assignment:
 
 * `config/checkstyle-rules.xml` holds the checkstyle rules file
 * `src/main/java/student` contains
-    * `Main.java`, which has the `main` method that controls the autograder
+    * `AutograderMain.java`, which has the `main` method that controls the autograder
     * `FavoritesIterator.java`, placeholder for student code for testing
       the autograder locally
     * `HiddenFavoriteIteratorsTest.java` and `ProvidedFavoritesIteratorTest`,
@@ -53,7 +52,7 @@ The main class of the autograder is specified in `build.gradle`:
 
 ```groovy
 ext {
-    javaMainClass = "student.Main"
+    javaMainClass = "student.AutograderMain"
 }
 ```
 
@@ -94,7 +93,7 @@ To configure the autograder on Gradescope:
 6. Wait for the "Built as of" time to be updated.
 
 ![screenshot showing Zip file upload of autograder.zip with Ubuntu 22.04 and
-JDK 17 selected](../images/configure-autograder.png)
+JDK 17 selected](images/configure-autograder.png)
 
 ## Student Instructions
 

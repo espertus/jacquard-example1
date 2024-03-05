@@ -13,7 +13,7 @@ repositories {
 
 apply plugin : "java"
 ext {
-    javaMainClass = "student.Main"
+    javaMainClass = "student.AutograderMain"
 }
 
 application {

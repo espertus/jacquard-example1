@@ -13,7 +13,7 @@ import java.util.*;
 
 import static java.lang.System.exit;
 
-public class Main {
+public class AutograderMain {
     public static void main(String[] args) {
         Autograder.init();
 
@@ -36,7 +36,7 @@ public class Main {
         // Create grader to make sure students did not use enhanced for-loops.
         SyntaxConditionGrader forGrader = new SyntaxConditionGrader(
                 0,
-                "enhanced for-loop",
+                "enhanced for-loops",
                 10.0,
                 node -> (node instanceof ForEachStmt)
         );
