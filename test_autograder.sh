@@ -1,4 +1,4 @@
 #!/usr/bin/env bash
 
-common/prepare_autograder.sh
-common/run_autograder.py `basename "$PWD"`
+scripts/prepare_autograder.sh
+scripts/run_autograder.py `basename "$PWD"`

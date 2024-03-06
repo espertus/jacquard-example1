@@ -4,6 +4,7 @@ import configparser
 import json
 import os
 import platform
+import re
 import shutil
 import subprocess
 import sys
@@ -138,16 +139,24 @@ def repackage(config):
     # Repackage all the test files in all the packages.
     for filename in tests:
         source = os.path.join(WORKING_JAVA_SUBDIR, old_package, filename)
+        # This will match the original package statement unless it contains something
+        # unusual, like a comment in its middle.
+        old_package_pattern = r'^\s*package\s+' + re.escape(old_package) + r'(?!\S).*?;'
         for new_package in packages:
             target = os.path.join(WORKING_JAVA_SUBDIR, new_package, filename)
 
             with open(target, 'w') as target_file:
+                # Add a new package statement to replace the one we will remove.
                 target_file.write(f"package {new_package};\n\n")
+
+                # Using a wildcard import makes it so that classes will be loaded
+                # first from the current package, then from the old package.
                 target_file.write(f"import {old_package}.*;\n")
 
+                # Copy all lines except the package statement, which has been replaced.
                 with open(source, 'r') as source_file:
                     for line in source_file:
-                        if f"package {old_package}" not in line:
+                        if not re.search(line):
                             target_file.write(line)
 
 
