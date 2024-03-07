@@ -9,9 +9,14 @@ import shutil
 import subprocess
 import sys
 
+USAGE_STRING = "\n".join([
+    "Usage: run_autograder.py [submission_dir]", "",
+    "If submission_dir is not provided, submission/ will be used.", "",
+    "If submission_dir is provided, it can be relative to the working",
+    "directory or the submissions/ directory, if present."])
+
 # Configuration file
 CONFIG_FILE_NAME = "config.ini"
-CONFIG_PATH_LOCAL_TEMPLATE = "../%s/" + CONFIG_FILE_NAME
 CONFIG_SUBMISSION_SECTION_NAME = "submission"
 CONFIG_CROSSTESTS_SECTION_NAME = "crosstests"
 CONFIG_SECTIONS = [CONFIG_SUBMISSION_SECTION_NAME, CONFIG_CROSSTESTS_SECTION_NAME]
@@ -21,9 +26,13 @@ CONFIG_SUBMISSION_KEYS = [CONFIG_PACKAGE_KEY, CONFIG_FILES_KEY]
 CONFIG_TESTS_KEY = "tests"
 CONFIG_PACKAGES_KEY = "packages"
 
-# All directories are relative. On the server, they are relative to /autograder.
+# Directories
+DIR_SEPARATORS = "\\/"
 AUTOGRADER_DIR = os.sep + "autograder" + os.sep
-SUBMISSION_SUBDIR = "submission" + os.sep
+
+# All subdirectories are relative. On the server, they are relative to /autograder.
+DEFAULT_SUBMISSION_SUBDIR = "submission" + os.sep
+DEFAULT_SUBMISSIONS_SUBDIR = "submissions" + os.sep
 GRADESCOPE_RESULTS_SUBDIR = "results" + os.sep
 GRADESCOPE_RESULTS_PATH = GRADESCOPE_RESULTS_SUBDIR + "results.json"
 SOURCE_SUBDIR = os.path.join("src", "main", "java") + os.sep
@@ -102,6 +111,40 @@ def ensure_file_in_package(file_path: str, package: str):
         f"File {file_path} does not contain the expected package declaration: {pkg_stmt}")
 
 
+def get_submission_subdir():
+    """
+    Identify the directory containing the submission.
+
+    If no command-line argument is provided, DEFAULT_SUBMISSION_SUBDIR is used.
+
+    If a command-line argument is provided, it is first tested alone, then
+    following DEFAULT_SUBMISSIONS_SUBDIR.
+
+    :raise Exception: if the directory cannot be found.
+
+    """
+    dir = DEFAULT_SUBMISSION_SUBDIR
+    if len(sys.argv) < 2 or not sys.argv[1].strip():
+        if os.path.exists(dir) and os.path.isdir(dir):
+            return dir
+        raise Exception(f"Unable to find submission directory {dir}.")
+
+    subdir = sys.argv[1].rstrip(DIR_SEPARATORS)
+    if os.path.exists(subdir):
+        if os.path.isdir(subdir):
+            return subdir + os.sep
+        else:
+            raise Exception(f"Specified submission location '{subdir}' is a file, not a directory.")
+    else:
+        subdir2 = DEFAULT_SUBMISSIONS_SUBDIR + subdir
+        if os.path.exists(subdir2):
+            if os.path.isdir(subdir2):
+                return subdir2 + os.sep
+            else:
+                raise Exception(f"Specified submission location {subdir2} is a file, not a directory.")
+        raise Exception(f"Unable to find submission directory {subdir} or {subdir2}.")
+
+
 def copy_req_files(config):
     """Copy student-provided files into the appropriate server directory.
 
@@ -114,7 +157,7 @@ def copy_req_files(config):
     os.makedirs(dest_path, exist_ok=True)
 
     for file in files:
-        file_path = SUBMISSION_SUBDIR + file
+        file_path = get_submission_subdir() + file
         if os.path.exists(file_path):
             if file_path.endswith(".java"):
                 ensure_file_in_package(file_path, package)
@@ -139,9 +182,18 @@ def repackage(config):
     # Repackage all the test files in all the packages.
     for filename in tests:
         source = os.path.join(WORKING_JAVA_SUBDIR, old_package, filename)
-        # This will match the original package statement unless it contains something
-        # unusual, like a comment in its middle.
-        old_package_pattern = r'^\s*package\s+' + re.escape(old_package) + r'(?!\S).*?;'
+        # This will match the original package statement by checking for:
+        # - the start of line
+        # - any number of spaces
+        # - "package"
+        # - one or more spaces
+        # - the old package name
+        # - optionally, one or more whitespace characters followed by any characters
+        #   (in case there is a comment)
+        # - semicolon
+        # This will not match a package statement where there is a comment between
+        # "package" and the old package name.
+        old_package_pattern = r'^\s*package\s+' + re.escape(old_package) + r'(?:\s+.*?|)\s*;'
         for new_package in packages:
             target = os.path.join(WORKING_JAVA_SUBDIR, new_package, filename)
 
@@ -156,7 +208,7 @@ def repackage(config):
                 # Copy all lines except the package statement, which has been replaced.
                 with open(source, 'r') as source_file:
                     for line in source_file:
-                        if not re.search(line):
+                        if not re.search(old_package_pattern, line):
                             target_file.write(line)
 
 
@@ -208,7 +260,7 @@ def read_config_file():
 
     # Make sure config file has required section and keys.
     config = configparser.ConfigParser()
-    path = CONFIG_PATH_LOCAL_TEMPLATE % sys.argv[1] if is_local() else CONFIG_FILE_NAME
+    path = CONFIG_FILE_NAME
     if not config.read(path):
         raise Exception(
             f"Unable to read configuration file {path}"
@@ -267,8 +319,8 @@ def get_submission_info(config) -> (str, list[str]):
 
 
 def main():
-    if is_local() and len(sys.argv) != 2:
-        print("Usage: run_autograder.py <projectdir>")
+    if is_local() and len(sys.argv) > 3:
+        print(USAGE_STRING)
         sys.exit(1)
     try:
         config = read_config_file()
