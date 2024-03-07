@@ -10,7 +10,7 @@ import static org.junit.jupiter.api.Assertions.*;
 
 public class ProvidedFavoritesIteratorTest {
     List<String> favoriteHotSauces0 = new ArrayList<>(); // I don't like hot sauce.
-    List<Integer> favoriteYears1 = List.of(2010); // my daughter's birth
+    List<Integer> favoriteYears1 = List.of(2010); // my child's birth year
     List<String> favoriteCaliforniaCities2 =
             List.of("Oakland", "San Francisco");
 

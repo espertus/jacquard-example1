@@ -10,7 +10,6 @@ import java.util.*;
  *
  * @param <T> the type of item
  */
-
 public class FavoritesIterator<T> implements Iterator<T> {
 
     private int index = 0;
@@ -34,14 +33,12 @@ public class FavoritesIterator<T> implements Iterator<T> {
     }
 
 
-    //if index 1 (second item), add 1 copy.
+    // incorrect implementation
     @Override
     public T next() {
-
         if (!hasNext()) {
             throw new NoSuchElementException();
         }
-
 
         if (index == 1) {
             list.add(list.get(index));
@@ -55,7 +52,6 @@ public class FavoritesIterator<T> implements Iterator<T> {
             list.add(list.get(index));
             list.add(list.get(index));
         }
-
 
         return list.get(index++);
     }

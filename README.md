@@ -1,21 +1,25 @@
-# Jacquard Quiz 1 Example
+# Jacquard Example 1
 
-This is an example of a [Jacquard](https://github.com/espertus/jacquard)
-autograder for a quiz.
+[Jacquard](https://github.com/espertus/jacquard) [[Javadoc](https://ellenspertus.com/jacquard/docs)]
+is a Java autograder library for Gradescope. This repository provides an example
+of a Jacquard-based autograder that was used
+for a quiz in a Java data structures course. It demonstrates these features, 
+applied to a single submitted file.
 
-## Teacher Instructions
+* [Checkstyle](https://checkstyle.sourceforge.io/) tests
+* [PMD](https://pmd.github.io/) tests
+* Parser-based tests (ensuring that language features are used as required)
+* JUnit 5 tests
 
-### Software Requirements
+## Software Requirements
 
-* Gradle 8.0 or higher
+* bash (included on OS X and Linux) for testing and building the autograder
 * Python 3 if you want to test locally by executing `test_autograder.py`
   (optional)
-* bash (included on OS X and Linux)
 
-For bash on Windows, we use and
-recommend [Git for Windows](https://gitforwindows.org/) 2.41 or higher.
+For bash on Windows, we use and recommend [Git for Windows](https://gitforwindows.org/) 2.41 or higher.
 
-### Files
+## Files
 
 These directories and files have code specific to the assignment:
 
@@ -29,15 +33,18 @@ These directories and files have code specific to the assignment:
 * `submission` holds a sample submission (required if you want to run
   `test_autograder.py` locally)
 * `submissions` (which is not required) holds sample submissions to manually
-  test the grader on Gradescope
+  test the grader locally or on Gradescope
+    * `perfect`, a subdirectory with a perfect submission
+    * `imperfect`, a subdirectory with an imperfect submission
+    * `starter`, a subdirectory with the starter code
 
-Any of the above files could have different names or packages.
+Any of the above files could have different names or packages, although package names
+must currently have only a single part (e.g., `student`, not `edu.myschool.student`.)
+The `submissions/` subdirectories could also have different names.
 
-#### config.ini
+### config.ini
 
-The submission package and files are specified in `config.ini` and should be
-edited if you change the package name or required files. Currently, package
-names must have only a single part (e.g., "student", not "edu.myschool.student").
+The submission package and files are specified in `config.ini`:
 
 ```
 [submission]
@@ -46,7 +53,7 @@ files = [FavoritesIterator.java]
 ```
 The list of files is comma-separated, with optional whitespace.
 
-#### build.gradle
+### build.gradle
 
 The main class of the autograder is specified in `build.gradle`:
 
@@ -66,12 +73,25 @@ dependencies.
 
 #### test_autograder.sh
 
-This tests the autograder on the file(s) in the `submission` subdirectory.
-It requires a Python 3 interpreter.
+This script, which requires Python 3, lets you test the autograder locally. If called without any
+arguments, it will use the submission in the `submission/` directory.
+```shell
+./test_autograder.sh
+```
+
+If called with an argument, it will use the submission in that subdirectory,
+prepending `submissions/` if necessary. For example, to test the autograder
+against the files in `submissions/perfect`, you could execute either:
+```shell
+./test_autograder.sh submissions/perfect
+./test_autograder.sh perfect
+```
 
 #### make_autograder.sh
 
 This creates the zip file for you to upload to Gradescope.
+
+###
 
 ### Uploading to Gradescope
 
@@ -126,8 +146,7 @@ Grading will be based on:
 
 ### Submission
 
-When done, you should upload only the source file
-`FavoritesIterator.java`.
+When done, you should upload only the source file `FavoritesIterator.java`.
 
 ### FavoritesIterator.java
 
@@ -180,7 +199,7 @@ import static org.junit.jupiter.api.Assertions.*;
 
 class FavoritesIteratorTest {
     List<String> favoriteHotSauces0 = new ArrayList<>(); // I don't like hot sauce.
-    List<Integer> favoriteYears1 = List.of(2010); // my daughter's birth
+    List<Integer> favoriteYears1 = List.of(2010); // my child's birth year
     List<String> favoriteCaliforniaCities2 =
             List.of("Oakland", "San Francisco");
 
