@@ -3,7 +3,7 @@
 [Jacquard](https://github.com/espertus/jacquard) [[Javadoc](https://ellenspertus.com/jacquard/docs)]
 is a Java autograder library for Gradescope. This repository provides an example
 of a Jacquard-based autograder that was used
-for a quiz in a Java data structures course. It demonstrates these features, 
+for a quiz in a Java data structures course. It demonstrates these features,
 applied to a single submitted file.
 
 * [Checkstyle](https://checkstyle.sourceforge.io/) tests
@@ -51,6 +51,7 @@ The submission package and files are specified in `config.ini`:
 package = student
 files = [FavoritesIterator.java]
 ```
+
 The list of files is comma-separated, with optional whitespace.
 
 ### build.gradle
@@ -69,12 +70,17 @@ your main autograder class.
 You are free to make other additions to `build.gradle`, such as adding
 dependencies.
 
+### Dockerfile
+
+This can be used to create a Docker image for the autograder.
+
 ### Shell scripts
 
 #### test_autograder.sh
 
 This script, which requires Python 3, lets you test the autograder locally. If called without any
 arguments, it will use the submission in the `submission/` directory.
+
 ```shell
 ./test_autograder.sh
 ```
@@ -82,6 +88,7 @@ arguments, it will use the submission in the `submission/` directory.
 If called with an argument, it will use the submission in that subdirectory,
 prepending `submissions/` if necessary. For example, to test the autograder
 against the files in `submissions/perfect`, you could execute either:
+
 ```shell
 ./test_autograder.sh submissions/perfect
 ./test_autograder.sh perfect
@@ -91,11 +98,12 @@ against the files in `submissions/perfect`, you could execute either:
 
 This creates the zip file for you to upload to Gradescope.
 
-###
+## Uploading to Gradescope
 
-### Uploading to Gradescope
+You can provide the grader to Gradescope as a zip file (recommended) or
+as a Docker image.
 
-#### Zip file
+### Zip file
 
 To create a zip file, run `./make_autograder.sh` from the command line.
 
@@ -114,6 +122,24 @@ To configure the autograder on Gradescope:
 
 ![screenshot showing Zip file upload of autograder.zip with Ubuntu 22.04 and
 JDK 17 selected](images/configure-autograder.png)
+
+## Docker
+
+If you have installed Docker, you can create an image based on [`Dockerfile`](Dockerfile)
+with a command line of the form:
+
+```
+# docker build -t username/gradername .
+```
+
+For example, because my Docker username is `espertus`, I would type:
+
+``` 
+docker build -t espertus/example1 .
+```
+
+For more information, see [Manual Docker
+Configuration](https://gradescope-autograders.readthedocs.io/en/latest/manual_docker/)_
 
 ## Student Instructions
 
