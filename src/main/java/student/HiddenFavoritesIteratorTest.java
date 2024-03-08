@@ -38,19 +38,19 @@ public class HiddenFavoritesIteratorTest {
     }
 
     @Test
-    @GradedTest(name = "works for three-element list", visibility = Visibility.AFTER_PUBLISHED, points = 10.0)
+    @GradedTest(name = "works for three-element list", points = 10.0, visibility = Visibility.AFTER_PUBLISHED)
     public void iteratorOverThreeElementListRobust() {
         testList(favoriteSiblings);
     }
 
     @Test
-    @GradedTest(name = "works for four-element list", visibility = Visibility.AFTER_PUBLISHED, points = 15.0)
+    @GradedTest(name = "works for four-element list", points = 15.0, visibility = Visibility.AFTER_PUBLISHED)
     public void iteratorOverFourElementListRobust() {
         testList(favoriteBases);
     }
 
     @Test
-    @GradedTest(name = "works for ten-element list", visibility = Visibility.AFTER_PUBLISHED, points = 15.0)
+    @GradedTest(name = "works for ten-element list", points = 15.0, visibility = Visibility.AFTER_PUBLISHED)
     public void iteratorOverTenElementListRobust() {
         testList(favoriteDecimalDigits);
     }
