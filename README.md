@@ -11,6 +11,9 @@ applied to a single submitted file.
 * Parser-based tests (ensuring that language features are used as required)
 * JUnit 5 tests
 
+The only significant change from [Jacquard Example 0](https://github.com/jacquard-autograder/jacquard-example0)
+is the addition of parser-based tests, which use [syntax-based graders](https://jacquard.ellenspertus.com/com/spertus/jacquard/syntaxgrader/package-summary.html).
+
 ## Prerequisites
 
 The rest of this document assumes that you have read:
@@ -18,6 +21,16 @@ The rest of this document assumes that you have read:
 * [Jacquard Example 0](https://github.com/jacquard-autograder/jacquard-example0),
   a more detailed introduction to the basic features
 * [The student instructions](StudentInstructions.md) for this assignment
+
+## Video Explanation
+
+1. [A simple syntax-based grader](https://northeastern.hosted.panopto.com/Panopto/Pages/Viewer.aspx?id=bdaef254-fa85-4c3d-b15b-b12d0175dd14) (2:56)
+2. [A complex syntax-based grader](https://northeastern.hosted.panopto.com/Panopto/Pages/Viewer.aspx?id=d4d241bf-529a-4d36-a279-b12d0041b519)
+
+## Note
+
+The remaining content is the same as for [Jacquard Example 0](https://github.com/jacquard-autograder/jacquard-example0),
+except for changes to file names.
 
 ## Software Requirements
 
