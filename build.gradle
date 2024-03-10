@@ -9,17 +9,14 @@ repositories {
 }
 
 apply plugin : "java"
-ext {
-    javaMainClass = "student.AutograderMain"
-}
 
 application {
-    mainClassName = javaMainClass
+    mainClass.set("student.AutograderMain")
 }
 
 dependencies {
     implementation 'com.spertus:jacquard:1.0.0'
-    implementation 'com.github.javaparser:javaparser-symbol-solver-core:3.25.3'
+    implementation 'com.github.javaparser:javaparser-symbol-solver-core:3.25.8'
     implementation 'org.junit.jupiter:junit-jupiter-api:5.10.2'
 }
 
